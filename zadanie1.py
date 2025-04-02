@@ -1,8 +1,10 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-def divided_differences(x, y):
+
+def divided_differences(x, y, n):
     """
+    pl. różnice dzielone
     Compute the divided differences table for Newton interpolation.
 
     Args:
@@ -12,14 +14,14 @@ def divided_differences(x, y):
     Returns:
         A list containing the coefficients for the Newton polynomial.
     """
-    n = len(x)
-    coef = y.copy()  # Initial coefficients are the y-values
+    coef = y[:n+1].copy()  # Initial coefficients are the y-values
 
-    for j in range(1, n):
-        for i in range(n-1, j-1, -1):
+    for j in range(1, n+1):
+        for i in range(n, j-1, -1):
             coef[i] = (coef[i] - coef[i-1]) / (x[i] - x[i-j])
 
     return coef
+
 
 def newton_interpolation(x_data, y_data, x_eval):
     """
@@ -43,11 +45,7 @@ def newton_interpolation(x_data, y_data, x_eval):
     return result
 
 
-
-def main():
-    # Take in input data and validate
-
-    # Danymi wejściowymi algorytmu są:
+def collect_and_validate_input():
     # zakładany rząd interpolowanej funkcji
     while True:
         try:
@@ -80,17 +78,24 @@ def main():
                 x_points.append(float(x))
                 y_points.append(float(y))
                 break  # valid
-            except ValueError as e:
-                print(e)
+            except ValueError:
+                 print('Błąd: Wprowadź dwie liczby oddzielone spacją (np. "2.5 3.7")')
+
+    return polynomial_degree, x_points, y_points
 
 
-    # Compute and print the interpolated value
-    interpolated_value = newton_interpolation(x_points, y_points, point_count)
+def example_input():
+    polynomial_degree = 3
+    x_points = [1, 2, 4.5, 5]
+    y_points = [-10.5, -16, 11.8125, 27.5]
+    return polynomial_degree, x_points, y_points
 
-    print(f"Interpolated value at x = {point_count}: {interpolated_value}")
 
-    b_list = divided_differences(x_points, y_points)
-    print(f'b0, b1, b2, ... = {b_list}')
+def main():
+    polynomial_degree, x_points, y_points = example_input()
+
+    coefficients = divided_differences(x_points, y_points, polynomial_degree)
+    print(f'coefficients = {coefficients}')
 
     # Plotting
     x_linspace = np.linspace(
@@ -99,21 +104,20 @@ def main():
         100
     )
 
-    def func(b_list, x_points, R):
-        val = b_list[0]
-
-        for i in range(1, len(b_list)):
-            wspolczynnik = 1
+    def func(coefficients, x_points, R):
+        val = 0
+        for i in range(0, len(coefficients)):
+            product = 1
             for j in range(0, i):
-                wspolczynnik *= (R - x_points[j])
+                product *= (R - x_points[j])
 
-            print(f'wspolczynnik {i} = {wspolczynnik}')
-            val += b_list[i] * wspolczynnik
+            print(f'wspolczynnik {i} = {product}')
+            val += coefficients[i] * product
 
         return val
 
 
-    y1 = lambda x: func(b_list, x_points, x)
+    y1 = lambda x: func(coefficients, x_points, x)
     y = y1(x_linspace)
     # Create the plot
     plt.figure(figsize=(8, 5))
@@ -121,7 +125,7 @@ def main():
     plt.scatter(x_points, y_points, color="red", s=100, label="Points", zorder=5)  # Red points
 
     # Add labels and legend
-    plt.title("Function Plot with Highlighted Points", fontsize=14)
+    plt.title(f'Wielomian stopnia {polynomial_degree}', fontsize=14)
     plt.xlabel("x", fontsize=12)
     plt.ylabel("y", fontsize=12)
     plt.grid(alpha=0.3)
@@ -129,6 +133,7 @@ def main():
 
     # Show the plot
     plt.show()
+
 
 if __name__ == '__main__':
     main()
