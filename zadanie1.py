@@ -42,83 +42,93 @@ def newton_interpolation(x_data, y_data, x_eval):
 
     return result
 
-# Take in input data and validate
 
-# Danymi wejściowymi algorytmu są:
-# zakładany rząd interpolowanej funkcji
-while True:
-    try:
-        polynomial_degree = int(input('Podaj rząd funkcji: '))
-        if polynomial_degree > 0:  # valid
-            break
-        else:
-            print('Rząd funkcji musi być większy od zera!')
-    except ValueError:
-        print('Podana wartość musi być liczbą całkowitą!')
 
-# ilość punktów interpolacji
-while True:
-    try:
-        point_count = int(input('Podaj ilość punktów: '))
-        if point_count > 0:  # valid
-            break
-        else:
-            print('Ilość punktów musi być większa od zera!')
-    except ValueError:
-        print('Podana wartość musi być liczbą całkowitą!')
+def main():
+    # Take in input data and validate
 
-# zestaw punktów (x, y).
-x_points = []
-y_points = []
-for i in range(1, point_count + 1):
+    # Danymi wejściowymi algorytmu są:
+    # zakładany rząd interpolowanej funkcji
     while True:
         try:
-            x, y = input(f'Podaj punkt {i}/{point_count}: ').split()
-            x_points.append(float(x))
-            y_points.append(float(y))
+            polynomial_degree = int(input('Podaj rząd funkcji: '))
+            if polynomial_degree > 0:  # valid
+                break
+            else:
+                print('Rząd funkcji musi być większy od zera!')
+        except ValueError:
+            print('Podana wartość musi być liczbą całkowitą!')
 
-        except ValueError as e:
-            print(e)
+    # ilość punktów interpolacji
+    while True:
+        try:
+            point_count = int(input('Podaj ilość punktów: '))
+            if point_count > 0:  # valid
+                break
+            else:
+                print('Ilość punktów musi być większa od zera!')
+        except ValueError:
+            print('Podana wartość musi być liczbą całkowitą!')
+
+    # zestaw punktów (x, y).
+    x_points = []
+    y_points = []
+    for i in range(1, point_count + 1):
+        while True:
+            try:
+                x, y = input(f'Podaj punkt {i}/{point_count}: ').split()
+                x_points.append(float(x))
+                y_points.append(float(y))
+                break  # valid
+            except ValueError as e:
+                print(e)
 
 
-# Compute and print the interpolated value
-interpolated_value = newton_interpolation(x_points, y_points, point_count)
+    # Compute and print the interpolated value
+    interpolated_value = newton_interpolation(x_points, y_points, point_count)
 
-print(f"Interpolated value at x = {point_count}: {interpolated_value}")
+    print(f"Interpolated value at x = {point_count}: {interpolated_value}")
 
-b_list = divided_differences(x_points, y_points)
-print(f'b0, b1, b2, ... = {b_list}')
+    b_list = divided_differences(x_points, y_points)
+    print(f'b0, b1, b2, ... = {b_list}')
 
-# Plotting
-x_linspace = np.linspace(x_points[-1], x_points[0], 100)
+    # Plotting
+    x_linspace = np.linspace(
+        x_points[0] - 0.1 * (x_points[-1] - x_points[0]),
+        x_points[-1] + 0.1 * (x_points[-1] - x_points[0]),
+        100
+    )
 
-def func(b_list, x_points, R):
-    val = b_list[0]
+    def func(b_list, x_points, R):
+        val = b_list[0]
 
-    for i in range(1, len(b_list)):
-        wspolczynnik = 1
-        for j in range(0, i):
-            wspolczynnik *= (R - x_points[j])
+        for i in range(1, len(b_list)):
+            wspolczynnik = 1
+            for j in range(0, i):
+                wspolczynnik *= (R - x_points[j])
 
-        print(f'wspolczynnik {i} = {wspolczynnik}')
-        val += b_list[i] * wspolczynnik
+            print(f'wspolczynnik {i} = {wspolczynnik}')
+            val += b_list[i] * wspolczynnik
 
-    return val
+        return val
 
 
-y1 = lambda x: func(b_list, x_points, x)
-y = y1(x_linspace)
-# Create the plot
-plt.figure(figsize=(8, 5))
-plt.plot(x_linspace, y, label="f", color="blue")
-plt.scatter(x_points, y_points, color="red", s=100, label="Points", zorder=5)  # Red points
+    y1 = lambda x: func(b_list, x_points, x)
+    y = y1(x_linspace)
+    # Create the plot
+    plt.figure(figsize=(8, 5))
+    plt.plot(x_linspace, y, label="f", color="blue")
+    plt.scatter(x_points, y_points, color="red", s=100, label="Points", zorder=5)  # Red points
 
-# Add labels and legend
-plt.title("Function Plot with Highlighted Points", fontsize=14)
-plt.xlabel("x", fontsize=12)
-plt.ylabel("y", fontsize=12)
-plt.grid(alpha=0.3)
-plt.legend()
+    # Add labels and legend
+    plt.title("Function Plot with Highlighted Points", fontsize=14)
+    plt.xlabel("x", fontsize=12)
+    plt.ylabel("y", fontsize=12)
+    plt.grid(alpha=0.3)
+    plt.legend()
 
-# Show the plot
-plt.show()
+    # Show the plot
+    plt.show()
+
+if __name__ == '__main__':
+    main()
