@@ -1,4 +1,3 @@
-
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -43,15 +42,49 @@ def newton_interpolation(x_data, y_data, x_eval):
 
     return result
 
-# Example usage:
-x_points = [911.3, 636.0, 451.1]  # Example x-coordinates
-y_points = [30.131, 40.12, 50.128]  # Example y-coordinates
-x_to_evaluate = 3      # Point to evaluate
+# Take in input data and validate
+
+# Danymi wejściowymi algorytmu są:
+# zakładany rząd interpolowanej funkcji
+while True:
+    try:
+        polynomial_degree = int(input('Podaj rząd funkcji: '))
+        if polynomial_degree > 0:  # valid
+            break
+        else:
+            print('Rząd funkcji musi być większy od zera!')
+    except ValueError:
+        print('Podana wartość musi być liczbą całkowitą!')
+
+# ilość punktów interpolacji
+while True:
+    try:
+        point_count = int(input('Podaj ilość punktów: '))
+        if point_count > 0:  # valid
+            break
+        else:
+            print('Ilość punktów musi być większa od zera!')
+    except ValueError:
+        print('Podana wartość musi być liczbą całkowitą!')
+
+# zestaw punktów (x, y).
+x_points = []
+y_points = []
+for i in range(1, point_count + 1):
+    while True:
+        try:
+            x, y = input(f'Podaj punkt {i}/{point_count}: ').split()
+            x_points.append(float(x))
+            y_points.append(float(y))
+
+        except ValueError as e:
+            print(e)
+
 
 # Compute and print the interpolated value
-interpolated_value = newton_interpolation(x_points, y_points, x_to_evaluate)
+interpolated_value = newton_interpolation(x_points, y_points, point_count)
 
-print(f"Interpolated value at x = {x_to_evaluate}: {interpolated_value}")
+print(f"Interpolated value at x = {point_count}: {interpolated_value}")
 
 b_list = divided_differences(x_points, y_points)
 print(f'b0, b1, b2, ... = {b_list}')
@@ -71,9 +104,6 @@ def func(b_list, x_points, R):
         val += b_list[i] * wspolczynnik
 
     return val
-
-
-# y = lambda x: b_list[0] + [b_list[i] * x_points[i+1] for i in range(1, len(b_list)+1)]
 
 
 y1 = lambda x: func(b_list, x_points, x)
