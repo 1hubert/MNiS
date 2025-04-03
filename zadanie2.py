@@ -23,26 +23,6 @@ def divided_differences(x, y, n):
     return coef
 
 
-def newton_interpolation(x_data, y_data, x_eval):
-    """
-    Evaluate the Newton interpolating polynomial at a given point x_eval.
-
-    Args:
-        x_data: List of x-coordinates (nodes).
-        y_data: List of y-coordinates (function values at nodes).
-        x_eval: The point at which to evaluate the polynomial.
-
-    Returns:
-        The interpolated value at x_eval.
-    """
-    coef = divided_differences(x_data, y_data)
-    n = len(x_data)
-    result = coef[-1]  # Start with the highest-order coefficient
-
-    for i in range(n-2, -1, -1):
-        result = result * (x_eval - x_data[i]) + coef[i]
-
-    return result
 
 
 def collect_and_validate_input():
@@ -85,7 +65,7 @@ def collect_and_validate_input():
 
 
 def example_input():
-    polynomial_degree = 2
+    polynomial_degree = 3
     x_points = [1, 2, 4.5, 5]
     y_points = [-10.5, -16, 11.8125, 27.5]
     return polynomial_degree, x_points, y_points
