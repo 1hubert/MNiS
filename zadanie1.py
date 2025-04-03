@@ -85,22 +85,22 @@ def collect_and_validate_input():
 
 
 def example_input():
-    polynomial_degree = 3
+    polynomial_degree = 2
     x_points = [1, 2, 4.5, 5]
     y_points = [-10.5, -16, 11.8125, 27.5]
     return polynomial_degree, x_points, y_points
 
 
 def main():
-    polynomial_degree, x_points, y_points = example_input()
+    polynomial_degree, x_points, y_points = collect_and_validate_input()
 
     coefficients = divided_differences(x_points, y_points, polynomial_degree)
     print(f'coefficients = {coefficients}')
 
     # Plotting
     x_linspace = np.linspace(
-        x_points[0] - 0.1 * (x_points[-1] - x_points[0]),
-        x_points[-1] + 0.1 * (x_points[-1] - x_points[0]),
+        x_points[0] - 0.15 * (x_points[-1] - x_points[0]),
+        x_points[-1] + 0.15 * (x_points[-1] - x_points[0]),
         100
     )
 
@@ -111,21 +111,19 @@ def main():
             for j in range(0, i):
                 product *= (R - x_points[j])
 
-            print(f'wspolczynnik {i} = {product}')
             val += coefficients[i] * product
 
         return val
-
 
     y1 = lambda x: func(coefficients, x_points, x)
     y = y1(x_linspace)
     # Create the plot
     plt.figure(figsize=(8, 5))
-    plt.plot(x_linspace, y, label="f", color="blue")
-    plt.scatter(x_points, y_points, color="red", s=100, label="Points", zorder=5)  # Red points
+    plt.plot(x_linspace, y, label=f"wielomian stopnia {polynomial_degree}", color="blue")
+    plt.scatter(x_points, y_points, color="red", s=75, label="dane", zorder=5)  # Red points
 
     # Add labels and legend
-    plt.title(f'Wielomian stopnia {polynomial_degree}', fontsize=14)
+    plt.title(f'Interpolacja wielomianowa', fontsize=14)
     plt.xlabel("x", fontsize=12)
     plt.ylabel("y", fontsize=12)
     plt.grid(alpha=0.3)
