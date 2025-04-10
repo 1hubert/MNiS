@@ -3,8 +3,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
-# f = lambda x, omega, max_k:  * sum([(-1)**k * sin((2*k+1)*omega*x) / ((2*k+1)**2) for k in range(0, max_k+1)])
-
 def f(x, freq, max_k):
     omega = 2 * pi * freq
     result = (8 / (pi ** 2))
@@ -14,32 +12,33 @@ def f(x, freq, max_k):
 
     return result * sum1
 
-# roznica_dzielona_w_przod = lambda x:
+y1 = lambda x: f(x, 0.25, 500)
+roznica_centralna = lambda x, h: (y1(x+h)-y1(x-h))/(2*h)
 
 
 # Plotting
 x_linspace = np.linspace(
-    -500,
-    500,
+    -5,
+    5,
     100
 )
 
-
-
-# y1 = lambda x: f(x_linspace, 0.25, 5)
-y = []
+y_pochodna = []
 for x in x_linspace:
-    y.append(f(x, 1, 500))
+    y_pochodna.append(roznica_centralna(x, 0.02))
 
-# y = y1(x_linspace)
+y_oryginal = []
+for x in x_linspace:
+    y_oryginal.append(y1(x))
+
 
 # Create the plot
 plt.figure(figsize=(8, 5))
-plt.plot(x_linspace, y, label=f"wielomian stopnia", color="blue")
-# plt.scatter(x_points, y_points, color="red", s=75, label="dane", zorder=5)  # Red points
+plt.plot(x_linspace, y_oryginal, label=f"f(x)", color="red")
+plt.plot(x_linspace, y_pochodna, label=f"f'(x)", color="blue")
 
 # Add labels and legend
-plt.title(f'Interpolacja wielomianowa', fontsize=14)
+plt.title(f'Różniczkowanie', fontsize=14)
 plt.xlabel("x", fontsize=12)
 plt.ylabel("y", fontsize=12)
 plt.grid(alpha=0.3)
