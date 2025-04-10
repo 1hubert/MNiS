@@ -36,10 +36,9 @@ for x in x_linspace:
 plt.figure(figsize=(8, 5))
 plt.plot(x_linspace, y_oryginal, label=f"f(x)", color="red")
 plt.plot(x_linspace, y_pochodna, label=f"f'(x)", color="blue")
-# plt.scatter(x_points, y_points, color="red", s=75, label="dane", zorder=5)  # Red points
 
 # Add labels and legend
-plt.title(f'Interpolacja wielomianowa', fontsize=14)
+plt.title(f'Różniczkowanie', fontsize=14)
 plt.xlabel("x", fontsize=12)
 plt.ylabel("y", fontsize=12)
 plt.grid(alpha=0.3)
