@@ -1,10 +1,10 @@
-def euler_derivative(func, x_start=0, steps=18, h=0.002):
+def euler_derivative(func, x_i=0, y_i=0, steps=18, h=0.002):
     """
     Calculates derivative using Euler's method by solving y'(x) = f(x)
 
     Parameters:
     - func: The function f(x) whose derivative we want to find
-    - x_start: Starting x value (default 0)
+    - x_i: Starting x value (default 0)
     - steps: Number of steps (default 18)
     - h: Step size (default 0.002)
 
@@ -15,16 +15,11 @@ def euler_derivative(func, x_start=0, steps=18, h=0.002):
     x_list = []
     derivative_list = []
 
-    # Initial values
-    x_i = x_start
-    y_i = 0  # y(0) = 0 is a reasonable starting point for computing derivatives
-
     print('-----------------------------------------------------')
     print(f'index\tx_i\ty_i\t\tf(x_i)\t\tderivative')
     print(f'{0}\t{x_i}\t{y_i}\t\t{func(x_i)}\t\t{func(x_i)}')
 
     for i in range(1, steps + 1):
-        # Calculate derivative at current point
         derivative = func(x_i)
         derivative_list.append(derivative)
 
@@ -41,23 +36,20 @@ def euler_derivative(func, x_start=0, steps=18, h=0.002):
 
     return x_list, derivative_list
 
-# Example usage
 if __name__ == "__main__":
-    # Define function to differentiate
-    def function_to_differentiate(x):
-        return x**2  # Example: f(x) = x^2
+    def func(x):
+        """Przykładowa funkcja f(x) do zrożniczkowania."""
+        return x**2
 
-    # Calculate derivatives using Euler's method
-    x_values, derivatives = euler_derivative(function_to_differentiate)
+    x_values, derivatives = euler_derivative(func)
 
-    # Compare with exact derivatives
     print("\nComparison with exact derivatives:")
     print('-----------------------------------------------------')
     print(f'x\tnumerical\texact\t\terror')
 
     for i in range(len(x_values)):
         x = x_values[i]
-        exact = 2 * x  # Exact derivative of x^2 is 2x
+        exact = 2 * x  # (x^2)'=2x
         error = derivatives[i] - exact
         print(f'{x:.3f}\t{derivatives[i]:.6f}\t{exact:.6f}\t{error:.6f}')
 
