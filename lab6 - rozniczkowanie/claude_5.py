@@ -21,13 +21,13 @@ def euler_derivative(func, x_i=0, y_i=0, steps=18, h=0.002):
 
     for i in range(1, steps + 1):
         derivative = func(x_i)
-        derivative_list.append(derivative)
 
         # Euler's method: y_{i+1} = y_i + h * y'(x_i)
         # Where y'(x_i) = f(x_i) in our case
         y_i = y_i + h * derivative
         x_i = x_i + h
 
+        derivative_list.append(y_i)
         x_list.append(x_i)
 
         print(f'{i}\t{x_i:.3f}\t{y_i:.6f}\t{func(x_i):.6f}\t{func(x_i):.6f}')
@@ -39,7 +39,7 @@ def euler_derivative(func, x_i=0, y_i=0, steps=18, h=0.002):
 if __name__ == "__main__":
     def func(x):
         """Przykładowa funkcja f(x) do zrożniczkowania."""
-        return x**2
+        return x ** 2
 
     x_values, derivatives = euler_derivative(func)
 

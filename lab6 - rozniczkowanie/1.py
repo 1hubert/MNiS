@@ -33,7 +33,7 @@ plt.plot(x_linspace, y_oryginal, label=f"f(x)", color="red")
 
 
 # Show the plot
-plt.title(f'Różniczkowanie', fontsize=14)
+plt.title(f'f(x)', fontsize=14)
 plt.xlabel("x", fontsize=12)
 plt.ylabel("y", fontsize=12)
 plt.grid(alpha=0.3)
