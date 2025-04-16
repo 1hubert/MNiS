@@ -1,10 +1,22 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.optimize import fsolve
+from math import pi, sin
 
+roznica_dzielona_w_przod = lambda func, x, h: (func(x+h)-func(x))/(h)
 
+def f(x, freq, max_k):
+    omega = 2 * pi * freq
+    result = (8 / (pi ** 2))
+    sum1 = 0
+    for k in range(0, max_k + 1):
+        sum1 += ((-1)**k) * sin((2*k+1)*omega*x) / ((2*k+1)**2)
 
-def backward_euler_step(y_n, h, f):
+    return result * sum1
+
+original_func = lambda x: f(x, 0.25, 500)
+
+def backward_euler_step(y_n, h):
     """
     Wykonuje jeden krok metody Eulera wstecz.
     y_{n+1} = y_n + h*f(y_{n+1})
@@ -19,17 +31,17 @@ def backward_euler_step(y_n, h, f):
     """
     # Definiujemy równanie, które musimy rozwiązać: y_{n+1} - y_n - h*f(y_{n+1}) = 0
     def equation(y_next):
-        return y_next - y_n - h * f(y_next)
+        return y_next - y_n - h * roznica_dzielona_w_przod(original_func, y_next, h)
 
     # Początkowe przybliżenie - używamy wyniku z metody Eulera w przód
-    initial_guess = y_n + h * f(y_n)
+    initial_guess = y_n + h * roznica_dzielona_w_przod(original_func, y_n, h)
 
     # Rozwiązujemy równanie nieliniowe
     y_next = fsolve(equation, initial_guess)[0]
 
     return y_next
 
-def solve_diff_eq_using_backward_euler(f, y0, x0, x_end, h):
+def solve_diff_eq_using_backward_euler(y0, x0, x_end, h):
     """
     Rozwiązuje równanie różniczkowe y' = f(y) metodą Eulera wstecz.
 
@@ -60,14 +72,14 @@ def solve_diff_eq_using_backward_euler(f, y0, x0, x_end, h):
 
     # Wykonujemy kroki metody
     for i in range(1, n_steps):
-        y[i] = backward_euler_step(y[i-1], h, f)
+        y[i] = backward_euler_step(y[i-1], h)
 
-        print(f'{i}\t{x[i]:.3f}\t{y[i]:.6f}')
+        # print(f'{i}\t{x[i]:.3f}\t{y[i]:.6f}')
     print('-----------------------------------------------------')
 
     return x, y
 
-def solve_diff_eq_using_forward_euler(f, y0, x0, x_end, h):
+def solve_diff_eq_using_forward_euler(y0, x0, x_end, h):
     # Obliczamy liczbę kroków
     n_steps = int((x_end - x0) / h) + 1
 
@@ -83,9 +95,9 @@ def solve_diff_eq_using_forward_euler(f, y0, x0, x_end, h):
     print(f'{0}\t{x[0]}\t{y[0]}')
 
     for i in range(1, n_steps):
-        y[i] = y[i-1] + h * f(y[i-1])
+        y[i] = y[i-1] + h * roznica_dzielona_w_przod(original_func, y[i-1], h)
 
-        print(f'{i}\t{x[i]:.3f}\t{y[i]:.6f}')
+        # print(f'{i}\t{x[i]:.3f}\t{y[i]:.6f}')
     print('-----------------------------------------------------')
 
     return x, y
@@ -94,52 +106,48 @@ def solve_diff_eq_using_forward_euler(f, y0, x0, x_end, h):
 def main():
 
 
-
-    x_linspace, y_eul_forward = solve_diff_eq_using_forward_euler(lambda y: y**2, 3, 0, 0.3, 0.002)
-    x_linspace, y_eul_backward = solve_diff_eq_using_backward_euler(lambda y: y**2, 3, 0, 0.3, 0.002)
+    # 1) zróżniczkowanie funkcji z zadania 1 metodą różniczkowania z zadania 2
 
 
+    # 2) zcałkowanie obydwoma eulerami uzyskanej pochodnej używając trzech różnych h
+    x_end = 3  # x end
+    x0 = 0  # x start
+    y0 = 0  # war. pocz.
+    y_eul_forward_history = []
+    y_eul_backward_history = []
+    for h in [1, 0.1, 0.02]:
+        x_linspace, y_eul_forward = solve_diff_eq_using_forward_euler(y0, x0, x_end, h)
+        x_linspace, y_eul_backward = solve_diff_eq_using_backward_euler(y0, x0, x_end, h)
 
-def main1():
-    y_exact_solution = lambda x: -3 / (3*x - 1)  # calc using previous methods
+        y_eul_forward_history.append([x_linspace, y_eul_forward])
+        y_eul_backward_history.append([x_linspace, y_eul_backward])
 
-    x0 = 0      # Punkt początkowy
-    y0 = 3      # Wartość początkowa y(0) = 1
-    x_end = 0.9 # Punkt końcowy (uwaga: dla y0=1 rozwiązanie dokładne ma osobliwość w x=1)
-    h = 0.002    # Krok całkowania
-
-
-    # Rozwiązujemy równanie metodą Eulera wstecz
-    x_numerical, y_numerical = solve_diff_eq_using_backward_euler(
-        lambda y: y ** 2,  # Funkcja definiująca równanie różniczkowe y'(x) = y²
-        y0,
-        x0,
-        x_end,
-        h
-    )
-
-    # Obliczamy rozwiązanie dokładne
-    x_exact = np.linspace(x0, x_end, 1000)
-    y_exact = y_exact_solution(x_exact)
+    # na potrzeby wykresu oryginalnej, trójkątnej funkcji
+    y_original = []
+    for x in y_eul_backward_history[2][0]:
+        y_original.append(original_func(x))
 
     # Wizualizacja wyników
     plt.figure(figsize=(10, 6))
-    plt.plot(x_exact, y_exact, 'b-', label='Analityczne')
-    plt.plot(x_numerical, y_numerical, 'ro', label='m. Eulera wstecz')
+    plt.plot(y_eul_forward_history[0][0], y_eul_forward_history[0][1], label='forward, h=1')
+    plt.plot(y_eul_forward_history[1][0], y_eul_forward_history[1][1], label='forward, h=0.1')
+    plt.plot(y_eul_forward_history[2][0], y_eul_forward_history[2][1], label='forward, h=0.02')
+
+    plt.plot(y_eul_backward_history[0][0], y_eul_backward_history[0][1], label='backward, h=1')
+    plt.plot(y_eul_backward_history[1][0], y_eul_backward_history[1][1], label='backward, h=0.1')
+    plt.plot(y_eul_backward_history[2][0], y_eul_backward_history[2][1], label='backward, h=0.02')
+
+    plt.plot(y_eul_backward_history[2][0], y_original, label='f(x)')
+
     plt.xlabel('x')
     plt.ylabel('y')
-    plt.title('Rozwiązanie równania y\' = y² metodą Eulera wstecz')
+    plt.title('Porównanie m. Eulera w przód z m. Eulera w tył')
     plt.grid(True)
     plt.legend()
     plt.show()
 
-    # Wypisujemy wartości numeryczne
-    print("Wyniki metody Eulera wstecz:")
-    for i in range(len(x_numerical)):
-        if i % 4 == 0 or i == len(x_numerical)-1:  # Wypisujemy co 4-ty punkt dla przejrzystości
-            y_exact_val = y_exact_solution(x_numerical[i], y0, x0)
-            error = abs(y_numerical[i] - y_exact_val)
-            print(f"x = {x_numerical[i]:.4f}, y_num = {y_numerical[i]:.6f}, y_exact = {y_exact_val:.6f}, błąd = {error:.6e}")
+    # 3) porównanie wpływu różnych h na wynik
+    # 4) porównanie obu metod
 
 
 if __name__ == '__main__':

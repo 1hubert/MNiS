@@ -17,8 +17,8 @@ y1 = lambda x: f(x, 0.25, 500)
 
 # Plotting
 x_linspace = np.linspace(
-    -5,
-    5,
+    0,
+    30,
     100
 )
 
