@@ -1,43 +1,20 @@
-from math import pi, sin
-import numpy as np
-import matplotlib.pyplot as plt
+from math import e
 
+def q_rect(a, b, n, func):
+    area = 0
+    h = (b-a) / n
+    a_rect = a
+    b_rect = a + h
+    for i in range(n):
+        area += (b_rect-a_rect) * func((a_rect+b_rect)/2)
 
-def f(x, freq, max_k):
-    omega = 2 * pi * freq
-    result = (8 / (pi ** 2))
-    sum1 = 0
-    for k in range(0, max_k + 1):
-        sum1 += ((-1)**k) * sin((2*k+1)*omega*x) / ((2*k+1)**2)
+        a_rect += h
+        b_rect += h
+    return area
 
-    return result * sum1
+def q_trap(a, b, n, func):
+    pass
 
+f = lambda x: 1/x
 
-y1 = lambda x: f(x, 0.25, 500)
-
-# Plotting
-x_linspace = np.linspace(
-    0,
-    30,
-    100
-)
-
-y_oryginal = []
-for x in x_linspace:
-    y_oryginal.append(y1(x))
-
-
-# Create the plot
-plt.figure(figsize=(8, 5))
-plt.plot(x_linspace, y_oryginal, label=f"f(x)", color="red")
-
-
-# Show the plot
-plt.title(f'f(x)', fontsize=14)
-plt.xlabel("x", fontsize=12)
-plt.ylabel("y", fontsize=12)
-plt.grid(alpha=0.3)
-plt.legend()
-
-# Show the plot
-plt.show()
+print(q_rect(1,e, 100, f))
