@@ -58,36 +58,44 @@ def main():
         backward_history.append(backward)
         central_history.append(central)
 
-    print(f'forward history is {len(forward_history[0]), len(forward_history[1]), len(forward_history[2])}')
-
 
     # Wizualizacja wyników - raozwiązania równania różniczkowego
     plt.figure(figsize=(12, 8))
 
     # Rysujemy wyniki metody Eulera w przód
-    plt.plot(x_linspace, forward_history[0], 'b-', label='Różnica dzielona w przód, h=1')
-    plt.plot(x_linspace, forward_history[1], 'g-', label='Różnica dzielona w przód, h=0.1')
-    plt.plot(x_linspace, forward_history[2], 'c-', label='Różnica dzielona w przód, h=0.02')
+    plt.plot(x_linspace, forward_history[0],label='Różnica dzielona w przód, h=1')
+    plt.plot(x_linspace, forward_history[1],label='Różnica dzielona w przód, h=0.1')
+    plt.plot(x_linspace, forward_history[2],label='Różnica dzielona w przód, h=0.02')
 
-    plt.plot(x_linspace, backward_history[0], 'b-', label='Różnica dzielona w tył, h=1')
-    plt.plot(x_linspace, backward_history[1], 'g-', label='Różnica dzielona w tył, h=0.1')
-    plt.plot(x_linspace, backward_history[2], 'c-', label='Różnica dzielona w tył, h=0.02')
+    plt.plot(x_linspace, backward_history[0], label='Różnica dzielona w tył, h=1')
+    plt.plot(x_linspace, backward_history[1], label='Różnica dzielona w tył, h=0.1')
+    plt.plot(x_linspace, backward_history[2], label='Różnica dzielona w tył, h=0.02')
 
-    plt.plot(x_linspace, central_history[0], 'b-', label='Różnica dzielona centralna, h=1')
-    plt.plot(x_linspace, central_history[1], 'g-', label='Różnica dzielona centralna, h=0.1')
-    plt.plot(x_linspace, central_history[2], 'c-', label='Różnica dzielona centralna, h=0.02')
+    plt.plot(x_linspace, central_history[0], label='Różnica dzielona centralna, h=1')
+    plt.plot(x_linspace, central_history[1], label='Różnica dzielona centralna, h=0.1')
+    plt.plot(x_linspace, central_history[2], label='Różnica dzielona centralna, h=0.02')
 
 
     plt.xlabel('x')
     plt.ylabel('y')
-    plt.title('Porównanie metod różniczkowania')
+    plt.title('Porównanie metod różnic dzielonych')
     plt.grid(True)
     plt.legend()
 
-    # # Obliczamy maksymalną różnicę między metodami dla różnych h
-    # for i, h in enumerate([1, 0.1, 0.02]):
-    #     max_diff = np.max(np.abs(y_eul_forward_history[i][1] - y_eul_backward_history[i][1]))
-    #     print(f"Maksymalna różnica między metodami dla h={h}: {max_diff:.6f}")
+    # Obliczamy maksymalną różnicę między metodami dla różnych h
+
+    forward_history = [np.array(x) for x in forward_history]
+    backward_history = [np.array(x) for x in backward_history]
+    central_history = [np.array(x) for x in central_history]
+
+    # print(f'forward_history 3 {forward_history[0][:3]}')
+    # print(f'backward_history 3 {backward_history[0][:3]}')
+    # print(f'abs {np.abs(forward_history[0][:3] - backward_history[0][:3])}')
+    # print(f'max {np.max(np.abs(forward_history[0][:3] - backward_history[0][:3]))}')
+
+    for i, h in enumerate([1, 0.1, 0.02]):
+        max_diff = np.max(np.abs(forward_history[i] - backward_history[i]))
+        print(f"Maksymalna różnica między metodami dla h={h}: {max_diff:.16f}")
 
     plt.show()
 

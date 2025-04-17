@@ -38,7 +38,7 @@ plt.plot(x_linspace, y_oryginal, label=f"f(x)", color="red")
 plt.plot(x_linspace, y_pochodna, label=f"f'(x)", color="blue")
 
 # Add labels and legend
-plt.title(f'Różniczkowanie', fontsize=14)
+plt.title(f'Różnica dzielona centralna', fontsize=14)
 plt.xlabel("x", fontsize=12)
 plt.ylabel("y", fontsize=12)
 plt.grid(alpha=0.3)
