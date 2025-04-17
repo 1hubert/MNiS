@@ -1,44 +1,44 @@
+"""różnica dzielona w tył"""
+from math import pi, sin
 import numpy as np
 import matplotlib.pyplot as plt
 
 
-def euler():
-    """Rozwiązuje równanie różniczkowe y'(x)=y^2"""
-    x_list = []
-    y_euler_list = []
-    y_exact_list = []
+def f(x, freq, max_k):
+    omega = 2 * pi * freq
+    result = (8 / (pi ** 2))
+    sum1 = 0
+    for k in range(0, max_k + 1):
+        sum1 += ((-1)**k) * sin((2*k+1)*omega*x) / ((2*k+1)**2)
 
-    h = 0.002
-    x_i = 0
-    y_i = 3
-    y_exact = lambda x: -3 / (3*x - 1)
+    return result * sum1
 
-    print('-----------------------------------------------------')
-    print(f'index\tx_i\ty_i\t\ty(x)\t\ty(x)-y_1')
-    print(f'{0}\t{x_i}\t{y_i}\t\t{y_exact(x_i)}\t\t{y_exact(x_i)-y_i}')
+y1 = lambda x: f(x, 0.25, 500)
 
-    for i in range(1, 18):
-        x_i = x_i + h
-        y_i = y_i + h * y_i ** 2
+def roznica_dzielona_w_tyl(f, x, h):
+    """Różnica dzielona centralna"""
+    return (f(x) - f(x-h)) / (h)
 
-        x_list.append(x_i)
-        y_euler_list.append(y_i)
-        y_exact_list.append(y_exact(x_i))
+# Plotting
+x_linspace = np.linspace(
+    -5,
+    5,
+    100
+)
 
-        print(f'{i}\t{x_i:.3f}\t{y_i:.6f}\t{y_exact(x_i):.6f}\t{(y_exact(x_i)-y_i):.6f}')
-    print('-----------------------------------------------------')
+y_pochodna = []
+for x in x_linspace:
+    y_pochodna.append(roznica_dzielona_w_tyl(y1, x, 0.02))
 
-    return x_list, y_euler_list, y_exact_list
-
-
-x_list, y_euler_list, y_exact_list = euler()
-
+y_oryginal = []
+for x in x_linspace:
+    y_oryginal.append(y1(x))
 
 
 # Create the plot
 plt.figure(figsize=(8, 5))
-plt.plot(x_list, y_euler_list, label=f"rozwiązanie metodą Eulera", color="red")
-plt.plot(x_list, y_exact_list, label=f"rozwiązanie rzeczywiste", color="blue")
+plt.plot(x_linspace, y_oryginal, label=f"f(x)", color="red")
+plt.plot(x_linspace, y_pochodna, label=f"f'(x)", color="blue")
 
 # Add labels and legend
 plt.title(f'Różniczkowanie', fontsize=14)

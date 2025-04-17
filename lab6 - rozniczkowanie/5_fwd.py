@@ -32,8 +32,10 @@ def roznica_dzielona_centralna(f, x, h):
 
 def main():
     h_list = [1, 0.1, 0.02]
+    x_start = 0
+    x_end = 0
 
-    x_linspace = np.linspace(0, 5, 100)
+    x_linspace = np.linspace(x_start, x_end, 100)
 
     forward_history = []
     backward_history = []
@@ -58,9 +60,6 @@ def main():
         backward_history.append(backward)
         central_history.append(central)
 
-    print(f'forward history is {len(forward_history[0]), len(forward_history[1]), len(forward_history[2])}')
-
-
     # Wizualizacja wyników - raozwiązania równania różniczkowego
     plt.figure(figsize=(12, 8))
 
@@ -77,20 +76,29 @@ def main():
     plt.plot(x_linspace, central_history[1], 'g-', label='Różnica dzielona centralna, h=0.1')
     plt.plot(x_linspace, central_history[2], 'c-', label='Różnica dzielona centralna, h=0.02')
 
+    # Obliczamy wartości oryginalnej funkcji dla porównania
+    x_fine = np.linspace(x_start, x_end, 1000)
+
+    y_original = [triangular_func_omega_0_25(x) for x in x_fine]
+
+    # Obliczamy "dokładną" pochodną za pomocą bardzo małego h dla porównania
+    y_derivative_exact = [roznica_dzielona_centralna(triangular_func_omega_0_25, x, 0.0001) for x in x_fine]
+
+    # plt.plot(x_fine, y_derivative_exact, 'k-', label='Dokładna pochodna f\'(x)')
+    # plt.plot(x_fine, y_original, 'k-', label='f(x)')
+
 
     plt.xlabel('x')
     plt.ylabel('y')
     plt.title('Porównanie metod różniczkowania')
     plt.grid(True)
     plt.legend()
+    plt.show()
 
-    # # Obliczamy maksymalną różnicę między metodami dla różnych h
+    # Obliczamy maksymalną różnicę między metodami dla różnych h
     # for i, h in enumerate([1, 0.1, 0.02]):
     #     max_diff = np.max(np.abs(y_eul_forward_history[i][1] - y_eul_backward_history[i][1]))
     #     print(f"Maksymalna różnica między metodami dla h={h}: {max_diff:.6f}")
-
-    plt.show()
-
 
 if __name__ == '__main__':
     main()
