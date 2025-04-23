@@ -1,4 +1,4 @@
-from math import e
+from math import sin, cos, pi
 
 def q_rect(a, b, n, func):
     area = 0
@@ -24,7 +24,8 @@ def q_trap(a, b, n, func):
         b_rect += h
     return area
 
-f = lambda x: 1/x
 
-print(q_rect(1,e, 100, f))
-print(q_trap(1,e, 100, f))
+
+
+print(q_rect(0, 2*pi, 1000, sin))
+print(q_trap(0, 2*pi, 1000, cos))

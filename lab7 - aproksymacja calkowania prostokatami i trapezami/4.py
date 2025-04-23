@@ -2,6 +2,29 @@ from math import pi, sin
 import numpy as np
 import matplotlib.pyplot as plt
 
+def q_rect(a, b, n, func):
+    area = 0
+    h = (b-a) / n
+    a_rect = a
+    b_rect = a + h
+    for i in range(n):
+        area += (b_rect-a_rect) * func((a_rect+b_rect)/2)
+
+        a_rect += h
+        b_rect += h
+    return area
+
+def q_trap(a, b, n, func):
+    area = 0
+    h = (b-a) / n
+    a_rect = a
+    b_rect = a + h
+    for i in range(n):
+        area += (b_rect-a_rect) * ((func(a_rect)+func(b_rect))/2)
+
+        a_rect += h
+        b_rect += h
+    return area
 
 def f(x, omega, max_k):
     """
@@ -30,6 +53,9 @@ def f(x, omega, max_k):
 
 
 y1 = lambda x: f(x, 1/(2*pi), 1000)
+
+print(q_rect(0,4*pi, 100, y1))
+print(q_trap(0, 4*pi, 100, y1))
 
 # Plotting
 x_linspace = np.linspace(
