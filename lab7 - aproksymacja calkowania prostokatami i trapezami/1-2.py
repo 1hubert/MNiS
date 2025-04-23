@@ -1,5 +1,6 @@
 from math import sin, cos, pi
 
+
 def q_rect(a, b, n, func):
     area = 0
     h = (b-a) / n
@@ -12,6 +13,7 @@ def q_rect(a, b, n, func):
         b_rect += h
     return area
 
+
 def q_trap(a, b, n, func):
     area = 0
     h = (b-a) / n
@@ -23,8 +25,6 @@ def q_trap(a, b, n, func):
         a_rect += h
         b_rect += h
     return area
-
-
 
 
 print(q_rect(0, 2*pi, 1000, sin))
