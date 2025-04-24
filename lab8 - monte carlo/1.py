@@ -83,3 +83,7 @@ print(f'monte carlo: {monte_carlo(a, b, n, f)}')
 print(f'simpson: {simpson(a, b, n, f)}')
 print(f'metoda kwadratów: {q_rect(a, b, n, f)}')
 print(f'metoda trapezów: {q_trap(a, b, n, f)}')
+
+# W (a) wyliczyć asymptoty na kartce i ustalić w jakim przedziale zcałkowana funkcja będzie miała wartości
+# W (b) wyliczyć na kartce całkę z f(x) i wyplotować wartości obliczone w sposób analityczny
+# W (c) wyplotować wszystko: wartości analitycznie i 4 metodami
