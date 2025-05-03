@@ -24,7 +24,10 @@ def simpson(a, b, n, func):
     # b = x_n
     # x_i = (x_0 + x_n) /2
 
-    h = (b - a) / (n-1)
+    if n < 1000:
+        h = (b - a) / (n)
+    elif n >= 1000:
+        h = (b - a) / (n-1)
 
     sum1 = 0
     sum2 = 0
@@ -74,15 +77,15 @@ def q_trap(a, b, n, func):
     return area
 
 
-a = 1
-b = 10
+x_l = 1
+x_p = 10
 n = 100_000
 f = lambda x: 1 / (2 * x ** 2) + 2 * x
 
-print(f'monte carlo: {monte_carlo(a, b, n, f)}')
-print(f'simpson: {simpson(a, b, n, f)}')
-print(f'metoda kwadratów: {q_rect(a, b, n, f)}')
-print(f'metoda trapezów: {q_trap(a, b, n, f)}')
+print(f'monte carlo: {monte_carlo(x_l, x_p, n, f)}')
+print(f'simpson: {simpson(x_l, x_p, n, f)}')
+print(f'metoda kwadratów: {q_rect(x_l, x_p, n, f)}')
+print(f'metoda trapezów: {q_trap(x_l, x_p, n, f)}')
 
 # W (a) wyliczyć asymptoty na kartce i ustalić w jakim przedziale zcałkowana funkcja będzie miała wartości
 # W (b) wyliczyć na kartce całkę z f(x) i wyplotować wartości obliczone w sposób analityczny
