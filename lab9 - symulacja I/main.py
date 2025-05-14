@@ -36,7 +36,7 @@ for i in range(n):
 
     y_positions = np.append(y_positions, np.array([position(t, y0[1], g) for t in t_sample]))
 
-    y0[1] *= 0.8
+    y0[1] *= 0.9  # 10% straty prędkości
     offset += t_return
 
 
