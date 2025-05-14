@@ -4,7 +4,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy.optimize import fsolve
 
-def model(t, y):
+def system_of_equations(t, y):
     y1, y2 = y
     dy1dt = y2
     dy2dt = -9.81
@@ -31,7 +31,7 @@ velocity = 10
 offset = 0
 for i in range(n):
     solution = solve_ivp(
-        model,
+        system_of_equations,
         [0, 5],
         [0, velocity],
         method='RK45',
