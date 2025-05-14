@@ -1,43 +1,49 @@
 # https://docs.scipy.org/doc/scipy/reference/generated/scipy.integrate.odeint.html
-from scipy.integrate import odeint
+from scipy.integrate import solve_ivp
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.optimize import fsolve
 
-def position(t, initial_vel, g):
-    return initial_vel*t + 0.5*g*t**2
+def model(t, y):
+    y1, y2 = y
+    dy1dt = y2
+    dy2dt = -9.81
+    return dy1dt, dy2dt
 
-# ilość czasów dodawanych do t_linspace z każdym odbiciem piłki
-resolution = 100
+def zero_crossing(t, y):
+    """This function returns 0 when y = 0"""
+    if t < 0.1:
+        return 1.0  # Return non-zero value to avoid event detection
+    return y[0]
+
+# Setting terminal = True tells solve_ivp to stop integration when the event occurs
+zero_crossing.terminal = True
+
+# Setting direction = 0 detects zero crossings in both directions
+zero_crossing.direction = 0
 
 # ilość kolejnych rzutów
 n = 10
 
-# grawitacja działa w dół
-g = -9.81
-
-# początkowa prędkość [m/s]
-initial_vel = 10
-
-# y0=[y1, y2]
-# y1 -- początkowe położenie to 0, rzucamy piłkę w górę z ziemii
-# y2 -- początkowa prędkość to 10 skierowane w górę
 t_linspace = np.empty(0)
 y_positions = np.empty(0)
-y0 = [0, initial_vel]
+velocity = 10
 offset = 0
 for i in range(n):
-    t_approx = 2 * y0[1] / (-g)
-    t_return = fsolve(position, t_approx, args=(y0[1], g))
+    solution = solve_ivp(
+        model,
+        [0, 5],
+        [0, velocity],
+        method='RK45',
+        events=zero_crossing,
+        t_eval=np.linspace(0,5,1000)
+    )
 
-    t_sample = np.linspace(y0[0], t_return, resolution)
+    t_linspace = np.append(t_linspace, solution.t + offset)
+    y_positions = np.append(y_positions, solution.y[0])
 
-    t_linspace = np.append(t_linspace, t_sample + offset)
-
-    y_positions = np.append(y_positions, np.array([position(t, y0[1], g) for t in t_sample]))
-
-    y0[1] *= 0.9  # 10% straty prędkości
-    offset += t_return
+    velocity *= 0.9  # 10% straty prędkości
+    offset += solution.t[-1]
 
 
 print(t_linspace)
