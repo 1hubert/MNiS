@@ -20,35 +20,16 @@ def simpson(a, b, n, func):
     n - number of points
     func - a function to integrate
     """
-    # a = x_0
-    # b = x_n
-    # x_i = (x_0 + x_n) /2
+    h = (b - a) / n
+    x = np.linspace(a, b, n+1)
+    y = func(x)
 
-    if n < 1000:
-        h = (b - a) / (n)
-    elif n >= 1000:
-        h = (b - a) / (n-1)
+    # print(x[0])
+    # print(x[1:-1:2])
+    # print(x[2:-1:2])
+    # print(x[-1])
 
-    sum1 = 0
-    sum2 = 0
-
-    x_values = np.linspace(a, b, n)
-
-    przedzial1 = range(1, n-1, 2)
-    # print(list(przedzial1))
-    for i in przedzial1:  # <1, n-1> czyli nieparzyste indeksy
-        sum1 += func(x_values[i])
-
-    przedzial2 = range(2, n-1, 2)
-    # print(list(przedzial2))
-    for i in przedzial2:  # <2, n-2> czyli parzyste indeksy
-        sum2 += func(x_values[i])
-
-    # print(f'sum1: {sum1}')
-    # print(f'sum2: {sum2}')
-
-    # return (h / 3) * (func(a) + 4*func((b + a) / 2) + func(b))
-    return (h / 3) * (func(a) + 4*sum1 + 2*sum2 + func(b))
+    return h/3 * (y[0] + 4*np.sum(y[1:-1:2]) + 2*np.sum(y[2:-1:2]) + y[-1])
 
 
 def q_rect(a, b, n, func):
@@ -79,13 +60,22 @@ def q_trap(a, b, n, func):
 
 x_l = 1
 x_p = 10
-n = 100_000
-f = lambda x: 1 / (2 * x ** 2) + 2 * x
+n = 10
+f = lambda x: 1 / (2 * (x ** 2)) + 2 * x
 
-print(f'monte carlo: {monte_carlo(x_l, x_p, n, f)}')
-print(f'simpson: {simpson(x_l, x_p, n, f)}')
-print(f'metoda kwadratów: {q_rect(x_l, x_p, n, f)}')
-print(f'metoda trapezów: {q_trap(x_l, x_p, n, f)}')
+precise_solution = 99.45
+
+methods = {
+    "monte carlo": monte_carlo,
+    "simpson": simpson,
+    "m. kwadratów": q_rect,
+    "m. trapezów": q_trap
+}
+
+for name, method in methods.items():
+    result = method(x_l, x_p, n, f)
+    error = abs(precise_solution - result)
+    print(f'{name}:\t{result}\terror = {error}')
 
 # W (a) wyliczyć asymptoty na kartce i ustalić w jakim przedziale zcałkowana funkcja będzie miała wartości
 # W (b) wyliczyć na kartce całkę z f(x) i wyplotować wartości obliczone w sposób analityczny

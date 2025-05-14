@@ -1,0 +1,105 @@
+//*****************************************************************
+// animacja masy na sprezynie 
+//*****************************************************************
+// generowanie macierzy rotacji
+function M=rot(a)
+M=[cos(a),sin(a);-sin(a),cos(a)];
+endfunction
+// stale
+n=40; // ilosc zwojow sprezyny
+T=5; // czas symulacji
+g=9.81; // grawitacja
+k=10; // wspolczynnik k sprezyny
+dt=0.01; // krok czasowy
+//*****************************************************************
+// uruchomienie okna symulacji
+//*****************************************************************
+// tytul
+xtitle("(lewy przycisk myszy- rozpoczecie symulacji, prawy przycisk myszy- stop)")
+// title page (in LaTeX)
+//rownania opisujace uklad
+// title page (in LaTeX)
+titlepage(["numeryczne rozwiazanie zwyczajnego rownania rozniczkowego dla masy na sprezynie : ";" "; "$ $\Large r{d^2\over dt^2}a+2{d\over dt}r \times {d\over dt}a=g\times\sin(a)$$";" "; "$$\Large {d^2\over dt^2}r-{k\over m}(r-r_0)=r\left({d\over dt}a\right)^2+g\times \cos(a)$$";" "; " z warunkami poczatkowymi : "; "$$ \Large a(0)=? \;\;\;\;\;\; {d\over dt}a(0)=0 \;\;\;\;\;\; r(0)=r_0=? \;\;\;\;\;\; {d\over dt}r(0)=0 $$"])
+//*****************************************************************
+// przetwarzanie dzialan- klikniecie mysza
+//*****************************************************************
+// czekaj na klikniecie 
+[c_i,c_x,c_y,c_w]=xclick();
+while (c_i<>2)&(c_i<>5) // tak dlugo jak nie bedzie klikniety prawy klawisz 
+clf() //czysc okno
+//***********************************************************
+// dane inicjacyjne
+//***********************************************************
+// tytul
+xtitle("(kliknij aby zainicjalizowac poczatkowa pozycje a(0) i r(0) )")
+// os X
+plot(0,0,'.k');A=gca();A.x_location="origin";
+A.y_location="origin";A.auto_scale="off";A.isoview="on";
+A.data_bounds=[-1 -1; 1,0];xgrid(3)
+// poczatkowe wspolrzedne 
+[c_i,x,y,c_w]=xclick();
+// oblicz warunki poczatkowe
+a=sign(x)*abs(atan(x/y));a0=a;da=0; // oblicz kat a(0)
+l=sqrt(x^2+y^2);r=l;,dr=0; // oblicz r(0)
+// dostosuj rozmiar okna do najwiekszego wymiaru ukladu 
+A.data_bounds=[-1.5,-max(4*l,4);1.5,max(l,0.5)];
+//***********************************************************
+// petla animacji
+//***********************************************************
+for t=0:dt:T
+//******************************************************
+// oblicz nowe pozycje
+//******************************************************
+// rozwiaz rownanie rozniczkowe dla a i r z wykorzystaniem metody Eulera 
+//*************************************************************************
+dda=-(g*sin(a)+2*dr*da)/r;
+ddr=r*(da)^2-k*(r-l)+g*cos(a);
+da=da+dt*dda;
+dr=dr+dt*ddr;
+a=a+dt*da;
+r=r+dt*dr;
+// sprezyna 
+springr=linspace(0,r,n)'; // rozciagliwosc sprezyny
+// transpozycja wspolrzednych na os sprezyny  -> /\/\/\
+springa=[0;(-1).^[0:n-3]';0]*(l/10);
+//obroc obraz sprezyny o kat a
+x=[x;r*sin(a)];
+y=[y;-r*cos(a)];
+M=-rot(-a);
+N=[springr,springa]*M;
+springy=N(:,1);springx=N(:,2);
+//******************************************************
+// wyswietl
+//******************************************************
+drawlater() // bufor
+clf() // czysc okno
+plot(springx,springy) //wyswietl sprezyne
+xstring(0,0.1,["t=" string(t)]) // czas
+
+xfarc(r*sin(a)-0.05,-r*cos(a)+0.05,0.1,0.1,0,360*64)
+// zmien rozmiar
+A=gca();A.data_bounds=[-1.5,-max(4*l,4);1.5,max(l,0.5)];
+A.auto_scale="off";A.isoview="on";
+A.axes_visible=["off" "off" "off"];
+drawnow() // wyswietl
+realtime(t); // opoznienie
+end
+//***********************************************************
+// animuj na nowo lub oposc
+//***********************************************************
+xtitle("(kliknij aby kontynuwoac )") // tytul
+plot(x,y,'-r') // wyswietl trajektorie
+A=gca();A.isoview="on";xgrid(3); // siatka zielona
+// czekaj na klikniecie mysza
+[c_i,x,y,c_w]=xclick();
+clf(); // wybierz opcje
+xtitle("(lewy przycisk myszy- rozpoczecie symulacji, prawy przycisk myszy- stop)")
+plot(0,0,'.k');A=gca();A.x_location="origin";
+A.y_location="origin";
+// czekaj na klikniecie
+[c_i,x,y,c_w]=xclick();
+end
+
+
+
+
