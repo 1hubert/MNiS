@@ -60,10 +60,8 @@ def q_trap(a, b, n, func):
 
 x_l = 1
 x_p = 10
-n = 10
+n = 10  # must be even
 f = lambda x: 1 / (2 * (x ** 2)) + 2 * x
-
-precise_solution = 99.45
 
 methods = {
     "monte carlo": monte_carlo,
@@ -72,6 +70,8 @@ methods = {
     "m. trapezów": q_trap
 }
 
+precise_solution = 99.45  # calculated by hand
+print(f'\nWartość całki policzona analitycznie: {precise_solution}\n')
 for name, method in methods.items():
     result = method(x_l, x_p, n, f)
     error = abs(precise_solution - result)
