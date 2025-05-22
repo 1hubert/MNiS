@@ -2,7 +2,6 @@
 from scipy.integrate import solve_ivp
 import numpy as np
 import matplotlib.pyplot as plt
-from scipy.optimize import fsolve
 
 def system_of_equations(t, y):
     y1, y2 = y
@@ -11,10 +10,10 @@ def system_of_equations(t, y):
     return dy1dt, dy2dt
 
 def zero_crossing(t, y):
-    """This function returns 0 when y = 0"""
+    """This function returns 0 when y1 crosses 0"""
     if t < 0.1:
         return 1.0  # Return non-zero value to avoid event detection
-    return y[0]
+    return y[0]  # y1 to położenie
 
 # Setting terminal = True tells solve_ivp to stop integration when the event occurs
 zero_crossing.terminal = True
