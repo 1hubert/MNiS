@@ -4,8 +4,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 def system_of_equations(t, y):
-    # y1, y2 = y
-    dy1dt = y[0]
+    y1, y2 = y
+    dy1dt = y2
     dy2dt = -9.81
     return dy1dt, dy2dt
 
@@ -32,7 +32,7 @@ for i in range(n):
     solution = solve_ivp(
         system_of_equations,
         [0, 5],
-        [velocity],
+        [0, velocity],
         method='RK45',
         events=zero_crossing,
         t_eval=np.linspace(0,5,1000)
