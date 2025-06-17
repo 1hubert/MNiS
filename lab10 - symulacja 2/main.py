@@ -26,7 +26,7 @@ def simulate_pendulum():
     """Główna funkcja symulacji"""
 
     # Warunki początkowe
-    theta0 = 2.8      # Kąt początkowy
+    theta0 = 2.8      # Kąt początkowy to 2.8 radianów = 160.428183 stopni (na prawo)
     omega0 = 0.0      # początkowa prędkość kątowa
     y0 = [theta0, omega0]
 
